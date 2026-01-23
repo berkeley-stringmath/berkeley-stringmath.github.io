@@ -1,4 +1,7 @@
-# Berkeley Informal String-Math Seminar (2026-Spring)
+---
+layout: page
+title: "Berkeley Informal String-Math Seminar (2026-Spring)"
+---
 
 Organized by: Mina Aganagic, Ivan Danilenko, Andrei Okounkov, and Peng Zhou
 

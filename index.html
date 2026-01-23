@@ -376,15 +376,33 @@
 
     const head = hm[1].trim();
 
-    // Prefer em-dash "—" but also accept "--" or " - "
-    let parts = head.split("—").map(x => x.trim()).filter(Boolean);
-    if (parts.length < 2) {
-      parts = head.split(/\s-\s/).map(x => x.trim()).filter(Boolean);
-    }
+    let date = "";
+    let speaker = "";
+    let institution = "";
 
-    const date = parts[0] || "";
-    const speaker = parts[1] || "";
-    const institution = stripStars(parts.slice(2).join(" — ").trim());
+    // Format A: "YYYY-MM-DD: Speaker (Affiliation)"
+    let m = /^(\d{4}-\d{2}-\d{2})\s*:\s*(.*)$/.exec(head);
+    if (m) {
+      date = m[1].trim();
+      const rest = m[2].trim();
+      const mi = /^(.*?)\s*\(([^)]+)\)\s*$/.exec(rest);
+      if (mi) {
+        speaker = mi[1].trim();
+        institution = mi[2].trim();
+      } else {
+        speaker = rest;
+      }
+    } else {
+      // Format B: "date — speaker — *institution*"
+      // Prefer em-dash "—" but also accept "--" or " - "
+      let parts = head.split("—").map(x => x.trim()).filter(Boolean);
+      if (parts.length < 2) {
+        parts = head.split(/\s-\s/).map(x => x.trim()).filter(Boolean);
+      }
+      date = parts[0] || "";
+      speaker = parts[1] || "";
+      institution = stripStars(parts.slice(2).join(" — ").trim());
+    }
 
     let title = "";
     let note = "";
@@ -393,14 +411,20 @@
     for (let j = i + 1; j < lines.length; j++) {
       const line = lines[j].trimEnd();
 
-      const mt = /^\*\*Title:\*\*\s*(.*)$/.exec(line.trim());
+      const mt = /^(?:\*\*Title:\*\*|Title:)\s*(.*)$/.exec(line.trim());
       if (mt) { title = mt[1].trim(); continue; }
 
-      const mn = /^\*\*Note:\*\*\s*(.*)$/.exec(line.trim());
+      const mn = /^(?:\*\*Note:\*\*|Note:)\s*(.*)$/.exec(line.trim());
       if (mn) { note = mn[1].trim(); continue; }
 
-      if (/^Abstract:\s*$/.test(line.trim())) {
-        abstract = lines.slice(j + 1).join("\n").trim();
+      const ma = /^(?:Abstract:)\s*(.*)$/.exec(line.trim());
+      if (ma) {
+        const rest = ma[1].trim();
+        if (rest) {
+          abstract = rest;
+        } else {
+          abstract = lines.slice(j + 1).join("\n").trim();
+        }
         break;
       }
     }
