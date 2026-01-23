@@ -1,0 +1,44 @@
+{
+  "semesters": [
+    {
+      "semester": "2026-spring",
+      "file": "2026-spring.md"
+    },
+    {
+      "semester": "2025-fall",
+      "file": "2025-fall.md"
+    },
+    {
+      "semester": "2025-spring",
+      "file": "2025-spring.md"
+    },
+    {
+      "semester": "2024-fall",
+      "file": "2024-fall.md"
+    },
+    {
+      "semester": "2024-spring",
+      "file": "2024-spring.md"
+    },
+    {
+      "semester": "2023-fall",
+      "file": "2023-fall.md"
+    },
+    {
+      "semester": "2023-spring",
+      "file": "2023-spring.md"
+    },
+    {
+      "semester": "2022-fall",
+      "file": "2022-fall.md"
+    },
+    {
+      "semester": "2022-spring",
+      "file": "2022-spring.md"
+    },
+    {
+      "semester": "2021-fall",
+      "file": "2021-fall.md"
+    }
+  ]
+}

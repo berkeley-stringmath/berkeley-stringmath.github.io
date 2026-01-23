@@ -111,7 +111,8 @@
   // Local data mode: load semester markdown files from ./data/
   // Expected files:
   //   data/<semester>.md     e.g. data/2025-fall.md
-  // No manifest.json; auto-scan ./data/ for semester markdown files.
+  // Prefer data/manifest.json (works on GitHub Pages); fall back to auto-scan locally.
+  const MANIFEST_URL = "data/manifest.json";
 
   function esc(s) {
     return (s ?? "").toString()
@@ -227,6 +228,12 @@
     return await resp.text();
   }
 
+  async function fetchJson(url) {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`Fetch failed: ${resp.status} for ${url}`);
+    return await resp.json();
+  }
+
   function parseSemesterSlug(filename) {
     const m = /^(\d{4})[-_ ]*(spring|summer|fall|winter)\.md$/i.exec(filename.trim());
     if (!m) return null;
@@ -265,6 +272,14 @@
   }
 
   async function loadSemesters() {
+    try {
+      const manifest = await fetchJson(MANIFEST_URL);
+      const semesters = (manifest && manifest.semesters) ? manifest.semesters : [];
+      if (Array.isArray(semesters) && semesters.length > 0) return semesters;
+    } catch (e) {
+      // fall through to auto-scan (local server only)
+    }
+
     const files = await listMarkdownFiles();
     const semesters = [];
     for (const f of files) {

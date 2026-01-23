@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+import argparse
 import csv
 import io
+import json
 import pathlib
 import re
-import argparse
 import sys
 import urllib.request
 
@@ -11,6 +12,10 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 INDEX_OLD = ROOT / "index-old.html"
 DATA_DIR = ROOT / "data"
+
+
+def json_dumps(obj):
+    return json.dumps(obj, indent=2, ensure_ascii=True) + "\n"
 
 
 def read_text(path):
@@ -121,6 +126,11 @@ def main(argv):
         action="store_true",
         help="List available semester slugs from the config sheet and exit.",
     )
+    parser.add_argument(
+        "--manifest-only",
+        action="store_true",
+        help="Only write data/manifest.json from the config sheet (no MD generation).",
+    )
     args = parser.parse_args(argv)
 
     prefix, config_gid = find_default_config()
@@ -140,6 +150,20 @@ def main(argv):
                 print(semester)
         return
 
+    if args.manifest_only:
+        semesters_out = []
+        for row in config_rows:
+            semester = (row.get("semester") or "").strip()
+            if semester:
+                semesters_out.append({"semester": semester, "file": f"{semester}.md"})
+        if semesters_out:
+            manifest_path = DATA_DIR / "manifest.json"
+            manifest = {"semesters": semesters_out}
+            manifest_path.write_text(json_dumps(manifest), encoding="utf-8")
+            print(f"Wrote {manifest_path}")
+        return
+
+    semesters_out = []
     for row in config_rows:
         semester = (row.get("semester") or "").strip()
         gid = (row.get("gid") or "").strip()
@@ -160,6 +184,16 @@ def main(argv):
         out_path = DATA_DIR / f"{semester}.md"
         out_path.write_text(md, encoding="utf-8")
         print(f"Wrote {out_path}")
+        semesters_out.append({"semester": semester, "file": f"{semester}.md"})
+
+    if not want and semesters_out:
+        manifest_path = DATA_DIR / "manifest.json"
+        manifest = {"semesters": semesters_out}
+        manifest_path.write_text(
+            json_dumps(manifest),
+            encoding="utf-8",
+        )
+        print(f"Wrote {manifest_path}")
 
 
 if __name__ == "__main__":
