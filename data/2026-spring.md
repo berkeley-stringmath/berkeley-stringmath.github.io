@@ -18,10 +18,8 @@ Instanton scattering matrices constructed in the previous talk give evidence for
 
 ---
 
-## 2026-03-02: someone (somewhere)
-Title: can you do this 
-
-Abstract:  
+## 2026-03-02:  
+  
 
 ---
 
@@ -29,7 +27,7 @@ Abstract:
 
 ---
 
-## 2026-03-16 - someone - *somewhere*
+## 2026-03-16  
 
 
 ---
