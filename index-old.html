@@ -1,0 +1,435 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Berkeley Informal String-Math Seminar</title>
+  <style>
+    body{
+      max-width: 980px;
+      margin: 32px auto;
+      padding: 0 16px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+    }
+    a { color: #0645ad; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    h2 { font-size: 1.5em; margin: 0.2em 0 0.6em; }
+    h4 { font-size: 1.05em; margin: 1.2em 0 0.4em; }
+    h3 { font-size: 1.25em; margin: 1.4em 0 0.6em; }
+    h5 { font-size: 1.0em; margin: 0.4em 0 0.4em; font-weight: 600; }
+
+    p { margin: 0.4em 0; }
+    .muted { color: #666; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #bbb;
+      padding: 7px 8px;
+      vertical-align: top;
+    }
+    th { text-align: left; background: #f6f6f6; }
+
+    .abstract {
+      white-space: pre-wrap;
+      margin: 0.3em 0 0.9em;
+    }
+
+    .archive a { margin-right: 10px; }
+    .links a { margin-right: 12px; }
+
+    .note {
+      border: 1px solid #ddd;
+      background: #fafafa;
+      padding: 10px 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2 id="pageTitle">Berkeley Informal String-Math Seminar</h2>
+
+  <p id="organizersLine">Organized by …</p>
+  <p>
+    Weekly on Mondays 2:10 PM at 402 Physics South.
+    Lunch will be provided at 1:00pm on the 4th floor interaction area.
+  </p>
+
+  <p class="links">
+    <strong>Links:</strong>
+    <a href="https://www.youtube.com/channel/UCCQDkMYUGsMJxqidfZJt9Vw/">YouTube archive</a> 
+    <a href="https://berkeley.zoom.us/j/99373923587?pwd=SUhXamdtbHhJMUJERlJ4NVJHL1Jtdz09">Zoom(by request)</a>
+  </p>
+
+    
+  <p class="muted" id="status">Loading schedule…</p>
+
+  <h4>Schedule of talks:</h4>
+
+  <table id="schedule" style="display:none;">
+    <thead>
+      <tr>
+        <th style="width:80px;">Date</th>
+        <th style="">Speaker</th>
+        <th>Title</th>
+      </tr>
+    </thead>
+    <tbody id="scheduleBody"></tbody>
+  </table>
+
+  <div id="afterSchedule" style="display:none;">
+    <p class="archive">
+      <strong>Past archive:</strong>
+      <span id="archiveLinks"></span>
+    </p>
+    <div class="note">
+      <strong>A note to the speakers:</strong>
+      <span>
+        This is a research seminar, intended for mathematicians and physicists. For the speaker to successfully reach the audience in both fields, it is important to explain, as clearly as possible: the motivations for the work, questions addressed, key ideas. The audience may fail to appreciate the glory of the result, otherwise.
+      </span>
+    </div>
+  </div>
+
+  <h3>Abstracts:</h3>
+  <div id="abstracts"></div>
+
+  <p class="muted">Last updated automatically from the organizers’ <a href="https://docs.google.com/spreadsheets/d/1WxIi-SS_rch4xPvrhel7n1kWzqneT1uto6YIhQlKzHE/edit?gid=0#gid=0"> Google Sheet</a>.</p>
+
+<script>
+  const PUBLISHED_PREFIX =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-SJYmYysUYao9rUZSsrPsoWuK0pmLdaPulhy1LCM0bs9AnAHSlQXL1l-saWtl3dlDWu21OpTWlRF7/pub";
+
+  const CONFIG_GID = "1652400440";
+
+  // Default seminar time — if time matches this (loosely), we hide it in the abstract
+  const DEFAULT_TIME_NORMALIZED = "2:10pm";
+
+  function esc(s) {
+    return (s ?? "").toString()
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function normalizeTime(t) {
+    // make comparisons forgiving: "2:10 PM", "2:10pm", "2:10 P.M." -> "2:10pm"
+    return (t ?? "")
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replaceAll(".", "")
+      .replaceAll(" ", "");
+  }
+
+  // CSV parser: quoted fields + commas + newlines
+  function parseCSV(csvText) {
+    const rows = [];
+    let row = [];
+    let field = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < csvText.length; i++) {
+      const c = csvText[i];
+      const next = csvText[i + 1];
+
+      if (inQuotes) {
+        if (c === '"' && next === '"') { field += '"'; i++; }
+        else if (c === '"') inQuotes = false;
+        else field += c;
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ",") { row.push(field); field = ""; }
+        else if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; }
+        else if (c === "\r") { /* ignore */ }
+        else field += c;
+      }
+    }
+    row.push(field);
+    rows.push(row);
+    return rows;
+  }
+
+  function rowsToObjects(rows) {
+    const header = rows[0].map(h => (h ?? "").trim());
+    const objects = [];
+    for (let i = 1; i < rows.length; i++) {
+      const r = rows[i];
+      if (!r || r.every(x => (x ?? "").trim() === "")) continue;
+
+      const obj = {};
+      for (let j = 0; j < header.length; j++) {
+        obj[header[j]] = (r[j] ?? "").toString().trimEnd();
+      }
+      objects.push(obj);
+    }
+    return objects;
+  }
+
+  function parseISODate(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return null;
+    const y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+    return new Date(Date.UTC(y, mo - 1, d));
+  }
+
+  function mmddFromISO(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return "";
+    return m[2] + m[3];
+  }
+
+  function fmtScheduleDate(iso) {
+    const dt = parseISODate(iso);
+    if (!dt) return iso;
+    const s = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(dt);
+    return s.replace(/^Sep\b/, "Sept");
+  }
+
+  function fmtAbstractDate(iso) {
+    const dt = parseISODate(iso);
+    if (!dt) return iso;
+    const s = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(dt)
+      .replace(/^Sep\b/, "Sept");
+    const parts = s.split(" ");
+    return `${parts[0]}. ${parts[1]}`;
+  }
+
+  function lastName(speaker) {
+    if (!speaker) return "";
+    const parts = speaker.trim().split(/\s+/);
+    const last = parts[parts.length - 1].replace(/[^A-Za-z0-9_-]/g, "");
+    if (!last) return "";
+    return last[0].toUpperCase() + last.slice(1);
+  }
+
+  function makeAnchorId(speaker, dateISO) {
+    const ln = lastName(speaker) || "Talk";
+    const mmdd = mmddFromISO(dateISO) || "0000";
+    return `${ln}${mmdd}`;
+  }
+
+  function csvUrlForGid(gid) {
+    return `${PUBLISHED_PREFIX}?gid=${encodeURIComponent(gid)}&single=true&output=csv`;
+  }
+
+  async function fetchCsvObjects(gid) {
+    const url = csvUrlForGid(gid);
+    const resp = await fetch(url, { cache: "no-store" });
+    if (!resp.ok) throw new Error(`Fetch failed: ${resp.status} for ${url}`);
+    const text = await resp.text();
+    const rows = parseCSV(text);
+    return rowsToObjects(rows);
+  }
+
+  function getRequestedSemester() {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get("semester") || "").trim();
+  }
+
+  function normTalk(t) {
+    const keys = ["date","time","speaker","affiliation","title","abstract","video"];
+    for (const k of keys) if (!(k in t)) t[k] = "";
+    t.date = (t.date || "").trim();
+    t.time = (t.time || "").trim();
+    t.speaker = (t.speaker || "").trim();
+    t.affiliation = (t.affiliation || "").trim();
+    t.title = (t.title || "").trim();
+    t.video = (t.video || "").trim();
+    return t;
+  }
+
+  function semesterPretty(raw) {
+    // "2026-spring" -> "2026 Spring"
+    const s = (raw || "").trim();
+    const m = /^(\d{4})[-\s_]*(spring|fall|summer|winter)$/i.exec(s);
+    if (m) {
+      const year = m[1];
+      const term = m[2].toLowerCase();
+      return year + " " + (term[0].toUpperCase() + term.slice(1));
+    }
+    // fallback: replace dashes/underscores with spaces, title-case words
+    return s.replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function buildArchiveLinks(cfgRows, chosenSemester) {
+    const container = document.getElementById("archiveLinks");
+    container.innerHTML = "";
+
+    for (const r of cfgRows) {
+      const sem = (r.semester || "").trim();
+      if (!sem) continue;
+
+      const a = document.createElement("a");
+      a.href = `?semester=${encodeURIComponent(sem)}`;
+      a.textContent = semesterPretty(sem);
+
+      // bold current
+      if (sem === chosenSemester) {
+        a.style.fontWeight = "700";
+        a.style.textDecoration = "underline";
+      }
+
+      container.appendChild(a);
+    }
+  }
+
+
+
+  function renderVideoLinks(videoCell) {
+  const raw = (videoCell || "").toString().trim();
+  if (!raw) return "";
+
+  const parts = raw
+    .split(";")
+    .map(x => x.trim())
+    .filter(x => x.length > 0);
+
+  if (parts.length === 0) return "";
+
+  if (parts.length === 1) {
+    return `<a href="${esc(parts[0])}">Video</a>`;
+  }
+
+  return parts
+    .map((url, i) => `<a href="${esc(url)}">Video${i + 1}</a>`)
+    .join(" ");
+}
+
+  async function main() {
+    const status = document.getElementById("status");
+    const scheduleTable = document.getElementById("schedule");
+    const scheduleBody = document.getElementById("scheduleBody");
+    const abstractsDiv = document.getElementById("abstracts");
+    const organizersLine = document.getElementById("organizersLine");
+    const afterSchedule = document.getElementById("afterSchedule");
+    const pageTitle = document.getElementById("pageTitle");
+
+    try {
+      // 1) Load config: expected columns semester,gid,organizers
+      const cfg = await fetchCsvObjects(CONFIG_GID);
+
+      const defaultRow = cfg[0];
+      if (!defaultRow || !defaultRow.semester || !defaultRow.gid) {
+        throw new Error("Config tab: first data row must have semester and gid columns.");
+      }
+
+      const requested = getRequestedSemester();
+      const chosenRow = requested
+        ? (cfg.find(r => (r.semester || "").trim() === requested) || defaultRow)
+        : defaultRow;
+
+      const chosenSemester = (chosenRow.semester || "").trim();
+      const chosenGid = (chosenRow.gid || "").trim();
+      const chosenOrganizers = (chosenRow.organizers || "").trim();
+
+      // Update title with semester in parentheses, with capitalization and no dashes
+      const semPretty = semesterPretty(chosenSemester);
+      pageTitle.textContent = `Berkeley Informal String-Math Seminar (${semPretty})`;
+      document.title = `Berkeley Informal String-Math Seminar (${semPretty})`;
+
+      organizersLine.textContent = chosenOrganizers
+        ? `Organized by ${chosenOrganizers.replaceAll(";", ",")}`
+        : "Organized by …";
+
+      buildArchiveLinks(cfg, chosenSemester);
+
+      // 2) Load talks
+      const talkRowsRaw = await fetchCsvObjects(chosenGid);
+      const talks = talkRowsRaw.map(normTalk).filter(t => t.date);
+      talks.sort((a,b) => (a.date || "").localeCompare(b.date || ""));
+
+      // 3) Render
+      scheduleBody.innerHTML = "";
+      abstractsDiv.innerHTML = "";
+
+      for (const t of talks) {
+        const hasSpeaker = !!(t.speaker && t.speaker.trim());
+        const hasTitle = !!(t.title && t.title.trim());
+
+        const timeNorm = normalizeTime(t.time);
+        const isDefaultTime = (!t.time) || (timeNorm === DEFAULT_TIME_NORMALIZED);
+        const needsStar = (t.time && !isDefaultTime);
+
+        // Schedule row:
+        // - If speaker blank: show date only, no TBA anywhere
+        // - If speaker present but title blank: show "TBA" (no link)
+        // - If speaker+title present: title is clickable (anchor)
+        const dateCell = esc(fmtScheduleDate(t.date)) + (needsStar ? "*" : "");
+
+        let titleCellHtml = "";
+        if (!hasSpeaker) {
+          titleCellHtml = ""; // no TBA
+        } else if (hasSpeaker && !hasTitle) {
+          titleCellHtml = "TBA"; // no link
+        } else {
+          const id = makeAnchorId(t.speaker, t.date);
+          titleCellHtml = `<a href="#${esc(id)}">${esc(t.title)}</a>`;
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${dateCell}</td>
+          <td>${hasSpeaker ? esc(t.speaker) : ""}</td>
+          <td>${titleCellHtml}</td>
+        `;
+        scheduleBody.appendChild(tr);
+
+        // Abstract rules:
+        // - If speaker blank: do not render any abstract entry
+        // - If speaker present but title blank: do not render any abstract entry
+        if (!hasSpeaker) continue;
+        if (!hasTitle) continue;
+
+        const id = makeAnchorId(t.speaker, t.date);
+
+        const h4 = document.createElement("h4");
+        h4.id = id;
+        h4.innerHTML = `${esc(fmtAbstractDate(t.date))}: ${esc(t.speaker)}${t.affiliation ? " (" + esc(t.affiliation) + ")" : ""}`;
+        abstractsDiv.appendChild(h4);
+
+        const h5 = document.createElement("h5");
+        h5.textContent = t.title;
+        abstractsDiv.appendChild(h5);
+
+        // Meta line: show time only if not default; always show video if present
+        const metaBits = [];
+        if (t.time && !isDefaultTime) metaBits.push(esc(t.time));
+        // if (t.video) metaBits.push(`<a href="${esc(t.video)}">Video</a>`);
+        const videoHtml = renderVideoLinks(t.video);
+if (videoHtml) metaBits.push(videoHtml);
+
+	      if (metaBits.length) {
+          const meta = document.createElement("p");
+          meta.className = "muted";
+          meta.innerHTML = metaBits.join(" • ");
+          abstractsDiv.appendChild(meta);
+        }
+
+        const abs = document.createElement("div");
+        abs.className = "abstract";
+        abs.textContent = (t.abstract || "").trim() ? t.abstract : "Abstract forthcoming.";
+        abstractsDiv.appendChild(abs);
+      }
+
+      status.textContent = "";
+      scheduleTable.style.display = "";
+      afterSchedule.style.display = "";
+    } catch (e) {
+      console.error(e);
+      status.textContent =
+        "Failed to load schedule 😵 Check: config tab columns (semester,gid,organizers) and that published CSV links work.";
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>

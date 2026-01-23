@@ -1,0 +1,543 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Berkeley Informal String-Math Seminar</title>
+  <style>
+    body{
+      max-width: 980px;
+      margin: 32px auto;
+      padding: 0 16px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+    }
+    a { color: #0645ad; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    h2 { font-size: 1.5em; margin: 0.2em 0 0.6em; }
+    h4 { font-size: 1.05em; margin: 1.2em 0 0.4em; }
+    h3 { font-size: 1.25em; margin: 1.4em 0 0.6em; }
+    h5 { font-size: 1.0em; margin: 0.4em 0 0.4em; font-weight: 600; }
+
+    p { margin: 0.4em 0; }
+    .muted { color: #666; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #bbb;
+      padding: 7px 8px;
+      vertical-align: top;
+    }
+    th { text-align: left; background: #f6f6f6; }
+
+    .abstract {
+      white-space: pre-wrap;
+      margin: 0.3em 0 0.9em;
+    }
+
+    .archive a { margin-right: 10px; }
+    .links a { margin-right: 12px; }
+    .email-link { margin-left: 4px; }
+    .email-icon {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      vertical-align: -1px;
+      fill: currentColor;
+    }
+
+    .note {
+      border: 1px solid #ddd;
+      background: #fafafa;
+      padding: 10px 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2 id="pageTitle">Berkeley Informal String-Math Seminar</h2>
+
+  <p id="organizersLine">Organized by: …</p>
+  <p id="metaLine">
+    Weekly on Mondays 2:10 PM at 402 Physics South.
+    Lunch will be provided at 1:00pm on the 4th floor interaction area.
+  </p>
+
+  <p class="links">
+    <strong>Links:</strong>
+    <a href="https://www.youtube.com/channel/UCCQDkMYUGsMJxqidfZJt9Vw/">YouTube archive</a> 
+    <a href="https://berkeley.zoom.us/j/99373923587?pwd=SUhXamdtbHhJMUJERlJ4NVJHL1Jtdz09">Zoom(by request)</a>
+  </p>
+
+    
+  <p class="muted" id="status">Loading schedule…</p>
+
+  <h4>Schedule of talks:</h4>
+
+  <table id="schedule" style="display:none;">
+    <thead>
+      <tr>
+        <th style="width:80px;">Date</th>
+        <th style="">Speaker</th>
+        <th>Title</th>
+      </tr>
+    </thead>
+    <tbody id="scheduleBody"></tbody>
+  </table>
+
+  <div id="afterSchedule" style="display:none;">
+    <p class="archive">
+      <strong>Past archive:</strong>
+      <span id="archiveLinks"></span>
+    </p>
+    <div class="note">
+      <strong>A note to the speakers:</strong>
+      <span>
+        This is a research seminar, intended for mathematicians and physicists. For the speaker to successfully reach the audience in both fields, it is important to explain, as clearly as possible: the motivations for the work, questions addressed, key ideas. The audience may fail to appreciate the glory of the result, otherwise.
+      </span>
+    </div>
+  </div>
+
+  <h3>Abstracts:</h3>
+  <div id="abstracts"></div>
+
+<script>
+  // Local data mode: load semester markdown files from ./data/
+  // Expected files:
+  //   data/<semester>.md     e.g. data/2025-fall.md
+  // No manifest.json; auto-scan ./data/ for semester markdown files.
+
+  function esc(s) {
+    return (s ?? "").toString()
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function parseISODate(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((iso || "").trim());
+    if (!m) return null;
+    const y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+    return new Date(Date.UTC(y, mo - 1, d));
+  }
+
+  function mmddFromISO(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((iso || "").trim());
+    if (!m) return "";
+    return m[2] + m[3];
+  }
+
+  function fmtScheduleDate(iso) {
+    const dt = parseISODate(iso);
+    if (!dt) return iso;
+    const s = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(dt);
+    return s.replace(/^Sep\b/, "Sept");
+  }
+
+  function fmtAbstractDate(iso) {
+    const dt = parseISODate(iso);
+    if (!dt) return iso;
+    const s = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" })
+      .format(dt).replace(/^Sep\b/, "Sept");
+    const parts = s.split(" ");
+    return `${parts[0]}. ${parts[1]}`;
+  }
+
+  function lastName(speaker) {
+    if (!speaker) return "";
+    const parts = speaker.trim().split(/\s+/);
+    const last = parts[parts.length - 1].replace(/[^A-Za-z0-9_-]/g, "");
+    if (!last) return "";
+    return last[0].toUpperCase() + last.slice(1);
+  }
+
+  function makeAnchorId(speaker, dateISO) {
+    const ln = lastName(speaker) || "Talk";
+    const mmdd = mmddFromISO(dateISO) || "0000";
+    return `${ln}${mmdd}`;
+  }
+
+  function semesterPretty(raw) {
+    const s = (raw || "").trim();
+    const m = /^(\d{4})[-\s_]*(spring|fall|summer|winter)$/i.exec(s);
+    if (m) {
+      const year = m[1];
+      const term = m[2].toLowerCase();
+      return year + " " + (term[0].toUpperCase() + term.slice(1));
+    }
+    return s.replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function getRequestedSemester() {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get("semester") || "").trim();
+  }
+
+  function splitOrganizers(raw) {
+    const text = (raw || "").trim();
+    if (!text) return [];
+    return text.split(/\s*[,;]\s*/).map(s => s.trim()).filter(Boolean);
+  }
+
+  function parseOrganizerToken(token) {
+    const t = token.trim();
+    let m = /^(.*)<\s*([^<>\s]+@[^<>\s]+)\s*>$/.exec(t);
+    if (m) return { name: m[1].trim(), email: m[2].trim() };
+    m = /^(.*)\(\s*([^)@\s]+@[^)\s]+)\s*\)\s*$/.exec(t);
+    if (m) return { name: m[1].trim(), email: m[2].trim() };
+    return { name: t, email: "" };
+  }
+
+  function renderEmailIcon() {
+    return `
+      <svg class="email-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm0 2v8h18V8l-9 5-9-5zm9 3 9-5H3l9 5z"/>
+      </svg>
+    `.trim();
+  }
+
+  function renderOrganizersLine(raw) {
+    const parts = splitOrganizers(raw).map(parseOrganizerToken);
+    if (parts.length === 0) return "Organized by: …";
+    const html = parts.map(p => {
+      const name = esc(p.name);
+      if (!p.email) return name;
+      const mail = esc(p.email);
+      return `${name}<a class="email-link" href="mailto:${mail}" aria-label="${name} email">${renderEmailIcon()}</a>`;
+    }).join(", ");
+    return `Organized by: ${html}`;
+  }
+
+  function extractOrganizersFromMd(mdText) {
+    const m = /^\s*Organizers?\s*:\s*(.+)\s*$/im.exec(mdText || "");
+    return m ? m[1].trim() : "";
+  }
+
+  async function fetchText(url) {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`Fetch failed: ${resp.status} for ${url}`);
+    return await resp.text();
+  }
+
+  function parseSemesterSlug(filename) {
+    const m = /^(\d{4})[-_ ]*(spring|summer|fall|winter)\.md$/i.exec(filename.trim());
+    if (!m) return null;
+    return { year: Number(m[1]), term: m[2].toLowerCase(), slug: `${m[1]}-${m[2].toLowerCase()}` };
+  }
+
+  function semesterSortKey(slug) {
+    const m = /^(\d{4})[-_ ]*(spring|summer|fall|winter)$/i.exec((slug || "").trim());
+    if (!m) return null;
+    const order = { spring: 1, summer: 2, fall: 3, winter: 4 };
+    return { year: Number(m[1]), termOrder: order[m[2].toLowerCase()] || 0 };
+  }
+
+  function compareSemesterSlugs(a, b) {
+    const ka = semesterSortKey(a);
+    const kb = semesterSortKey(b);
+    if (!ka || !kb) return (a || "").localeCompare(b || "");
+    if (ka.year !== kb.year) return ka.year - kb.year;
+    return ka.termOrder - kb.termOrder;
+  }
+
+  async function listMarkdownFiles() {
+    const html = await fetchText("data/");
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const links = Array.from(doc.querySelectorAll("a[href]"));
+    const files = [];
+
+    for (const a of links) {
+      const href = a.getAttribute("href") || "";
+      const clean = href.split(/[?#]/)[0];
+      const name = decodeURIComponent(clean.replace(/^.*\//, ""));
+      if (/\.md$/i.test(name)) files.push(name);
+    }
+
+    return Array.from(new Set(files));
+  }
+
+  async function loadSemesters() {
+    const files = await listMarkdownFiles();
+    const semesters = [];
+    for (const f of files) {
+      const parsed = parseSemesterSlug(f);
+      if (!parsed) continue;
+      semesters.push({ semester: parsed.slug, file: f });
+    }
+    if (semesters.length === 0) {
+      throw new Error("No semester markdown files found in data/.");
+    }
+    return semesters;
+  }
+
+  function buildArchiveLinks(semesters, chosenSemester) {
+    const container = document.getElementById("archiveLinks");
+    container.innerHTML = "";
+
+    for (const r of semesters) {
+      const sem = (r.semester || "").trim();
+      if (!sem) continue;
+
+      const a = document.createElement("a");
+      a.href = `?semester=${encodeURIComponent(sem)}`;
+      a.textContent = semesterPretty(sem);
+
+      if (sem === chosenSemester) {
+        a.style.fontWeight = "700";
+        a.style.textDecoration = "underline";
+      }
+
+      container.appendChild(a);
+    }
+  }
+
+  function splitEntries(md) {
+    // Split on a line that is exactly "---" (allow surrounding whitespace)
+    return md
+      .replaceAll("\r\n", "\n")
+      .split(/\n[ \t]*---[ \t]*\n/g)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+  }
+
+  function parseMetaBlock(lines) {
+    // Meta section: consecutive "Key: Value" lines from the top, stopping at first blank line.
+    const meta = {};
+    let i = 0;
+
+    // skip leading blanks
+    while (i < lines.length && lines[i].trim() === "") i++;
+
+    for (; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.trim() === "") break;
+      const m = /^([A-Za-z][A-Za-z0-9 _-]*?)\s*:\s*(.*)$/.exec(line);
+      if (!m) break;
+      const key = m[1].trim().toLowerCase();
+      const val = (m[2] || "").trim();
+      meta[key] = val;
+    }
+    return meta;
+  }
+
+  function stripStars(s) {
+    // "*UC Berkeley*" -> "UC Berkeley"
+    return (s || "").replace(/^\*+/, "").replace(/\*+$/, "");
+  }
+
+  function parseTalkEntry(entry) {
+    const lines = entry.split("\n");
+
+    // Expect first non-empty line to be "## date — speaker — *institution*"
+    let i = 0;
+    while (i < lines.length && lines[i].trim() === "") i++;
+    const h = (lines[i] || "").trim();
+    const hm = /^##\s*(.*)$/.exec(h);
+    if (!hm) return null;
+
+    const head = hm[1].trim();
+
+    // Prefer em-dash "—" but also accept "--" or " - "
+    let parts = head.split("—").map(x => x.trim()).filter(Boolean);
+    if (parts.length < 2) {
+      parts = head.split(/\s-\s/).map(x => x.trim()).filter(Boolean);
+    }
+
+    const date = parts[0] || "";
+    const speaker = parts[1] || "";
+    const institution = stripStars(parts.slice(2).join(" — ").trim());
+
+    let title = "";
+    let note = "";
+    let abstract = "";
+
+    for (let j = i + 1; j < lines.length; j++) {
+      const line = lines[j].trimEnd();
+
+      const mt = /^\*\*Title:\*\*\s*(.*)$/.exec(line.trim());
+      if (mt) { title = mt[1].trim(); continue; }
+
+      const mn = /^\*\*Note:\*\*\s*(.*)$/.exec(line.trim());
+      if (mn) { note = mn[1].trim(); continue; }
+
+      if (/^Abstract:\s*$/.test(line.trim())) {
+        abstract = lines.slice(j + 1).join("\n").trim();
+        break;
+      }
+    }
+
+    return {
+      date: date.trim(),
+      speaker: speaker.trim(),
+      affiliation: institution.trim(),
+      title: title.trim(),
+      note: note.trim(),
+      abstract: abstract
+    };
+  }
+
+  function parseSemesterMarkdown(mdText) {
+    const entries = splitEntries(mdText);
+    if (entries.length === 0) return { meta: {}, talks: [] };
+
+    // Meta is the very first entry, before the first "---"
+    const metaLines = entries[0].split("\n");
+    const meta = parseMetaBlock(metaLines);
+
+    // Remaining entries are talks
+    const talks = [];
+    for (let k = 1; k < entries.length; k++) {
+      const t = parseTalkEntry(entries[k]);
+      if (!t) continue;
+      if (!t.date) continue;
+      talks.push(t);
+    }
+
+    // sort by date
+    talks.sort((a,b) => (a.date || "").localeCompare(b.date || ""));
+    return { meta, talks };
+  }
+
+  function renderVideoLinks(videoCell) {
+    const raw = (videoCell || "").toString().trim();
+    if (!raw) return "";
+    const parts = raw.split(";").map(x => x.trim()).filter(Boolean);
+    if (parts.length === 0) return "";
+    if (parts.length === 1) return `<a href="${esc(parts[0])}">Video</a>`;
+    return parts.map((url, i) => `<a href="${esc(url)}">Video${i + 1}</a>`).join(" ");
+  }
+
+  async function main() {
+    const status = document.getElementById("status");
+    const scheduleTable = document.getElementById("schedule");
+    const scheduleBody = document.getElementById("scheduleBody");
+    const abstractsDiv = document.getElementById("abstracts");
+    const organizersLine = document.getElementById("organizersLine");
+    const metaLine = document.getElementById("metaLine");
+    const afterSchedule = document.getElementById("afterSchedule");
+    const pageTitle = document.getElementById("pageTitle");
+
+    try {
+      const semesters = await loadSemesters();
+      semesters.sort((a, b) => compareSemesterSlugs(b.semester, a.semester));
+
+      const requested = getRequestedSemester();
+      const chosen = requested
+        ? (semesters.find(x => (x.semester || "").trim() === requested) || semesters[0])
+        : semesters[0];
+
+      const chosenSemester = (chosen.semester || "").trim();
+      const chosenFile = (chosen.file || "").trim() || `${chosenSemester}.md`;
+
+      const semPretty = semesterPretty(chosenSemester);
+      pageTitle.textContent = `Berkeley Informal String-Math Seminar (${semPretty})`;
+      document.title = `Berkeley Informal String-Math Seminar (${semPretty})`;
+
+      buildArchiveLinks(semesters, chosenSemester);
+
+      const md = await fetchText(`data/${chosenFile}`);
+      const parsed = parseSemesterMarkdown(md);
+
+      const meta = parsed.meta || {};
+      const talks = parsed.talks || [];
+
+      // Meta rendering
+      const org = (meta.organizers || meta.organizer || "").trim() || extractOrganizersFromMd(md);
+      organizersLine.innerHTML = renderOrganizersLine(org);
+
+      const time = (meta.time || "").trim();
+      const loc = (meta.location || "").trim();
+
+      if (time || loc) {
+        const bits = [];
+        if (time) bits.push(time);
+        if (loc) bits.push(`at ${loc}`);
+        metaLine.textContent = bits.join(" ");
+      } // else keep the default static line already in HTML
+
+      // Render schedule + abstracts
+      scheduleBody.innerHTML = "";
+      abstractsDiv.innerHTML = "";
+
+      for (const t of talks) {
+        const hasSpeaker = !!(t.speaker && t.speaker.trim());
+        const hasTitle = !!(t.title && t.title.trim());
+
+        // If note exists, mark the date with a star in schedule.
+        const needsStar = !!(t.note && t.note.trim());
+
+        const dateCell = esc(fmtScheduleDate(t.date)) + (needsStar ? "*" : "");
+
+        let titleCellHtml = "";
+        if (!hasSpeaker) {
+          titleCellHtml = "";
+        } else if (hasSpeaker && !hasTitle) {
+          titleCellHtml = "TBA";
+        } else {
+          const id = makeAnchorId(t.speaker, t.date);
+          titleCellHtml = `<a href="#${esc(id)}">${esc(t.title)}</a>`;
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${dateCell}</td>
+          <td>${hasSpeaker ? esc(t.speaker) : ""}</td>
+          <td>${titleCellHtml}</td>
+        `;
+        scheduleBody.appendChild(tr);
+
+        // Abstract entries only if speaker+title exist (same as old behavior)
+        if (!hasSpeaker) continue;
+        if (!hasTitle) continue;
+
+        const id = makeAnchorId(t.speaker, t.date);
+
+        const h4 = document.createElement("h4");
+        h4.id = id;
+        h4.innerHTML = `${esc(fmtAbstractDate(t.date))}: ${esc(t.speaker)}${t.affiliation ? " (" + esc(t.affiliation) + ")" : ""}`;
+        abstractsDiv.appendChild(h4);
+
+        const h5 = document.createElement("h5");
+        h5.textContent = t.title;
+        abstractsDiv.appendChild(h5);
+
+        const metaBits = [];
+        if (t.note && t.note.trim()) metaBits.push(esc(t.note));
+        // If you later add "Video:" into Note, or add a real video field, you can extend here.
+
+        if (metaBits.length) {
+          const metaP = document.createElement("p");
+          metaP.className = "muted";
+          metaP.innerHTML = metaBits.join(" • ");
+          abstractsDiv.appendChild(metaP);
+        }
+
+        const abs = document.createElement("div");
+        abs.className = "abstract";
+        abs.textContent = (t.abstract || "").trim() ? t.abstract : "Abstract forthcoming.";
+        abstractsDiv.appendChild(abs);
+      }
+
+      status.textContent = "";
+      scheduleTable.style.display = "";
+      afterSchedule.style.display = "";
+    } catch (e) {
+      console.error(e);
+      status.textContent =
+        "Failed to load schedule 😵 Check: data/ has readable *.md files (e.g. 2025-fall.md).";
+    }
+  }
+
+  main();
+
+</script>
+</body>
+</html>
