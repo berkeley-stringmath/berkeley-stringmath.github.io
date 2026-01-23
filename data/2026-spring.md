@@ -1,4 +1,4 @@
-Organizers: Mina Aganagic, Spencer Tamagni, Sujay Nair, and Peng Zhou
+Organizers: Mina Aganagic, Spencer Tamagni, Sujay Nair, and Peng Zhou<pzhou.math@gmail.com>
 
 ---
 
