@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Berkeley Informal String-Math Seminar (2026-Spring)"
+title: ""
 ---
 
 Organized by: Mina Aganagic, Sujay Nair, Spencer Tamagni, and Peng Zhou
