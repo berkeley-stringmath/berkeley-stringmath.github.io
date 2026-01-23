@@ -3,6 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <title>Berkeley Informal String-Math Seminar</title>
   <style>
     body{
@@ -548,6 +560,10 @@
       status.textContent = "";
       scheduleTable.style.display = "";
       afterSchedule.style.display = "";
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        await window.MathJax.typesetPromise();
+      }
     } catch (e) {
       console.error(e);
       status.textContent =
