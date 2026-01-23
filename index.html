@@ -124,7 +124,7 @@
   <h3>Abstracts:</h3>
   <div id="abstracts"></div>
  <hr>
-<a href="https://github.com/berkeley-stringmath/berkeley-stringmath.github.io/edit/main/data/2026-spring.md">edit schedule</a>
+<a id="editScheduleLink" href="https://github.com/berkeley-stringmath/berkeley-stringmath.github.io/edit/main/data/2026-spring.md">edit schedule</a>
 <script>
   // Local data mode: load semester markdown files from ./data/
   // Expected files:
@@ -480,6 +480,7 @@
     const organizersLine = document.getElementById("organizersLine");
     const metaLine = document.getElementById("metaLine");
     const afterSchedule = document.getElementById("afterSchedule");
+    const editScheduleLink = document.getElementById("editScheduleLink");
     const pageTitle = document.getElementById("pageTitle");
 
     try {
@@ -499,6 +500,9 @@
       document.title = `Berkeley Informal String-Math Seminar (${semPretty})`;
 
       buildArchiveLinks(semesters, chosenSemester);
+      if (editScheduleLink && chosenFile) {
+        editScheduleLink.href = `https://github.com/berkeley-stringmath/berkeley-stringmath.github.io/edit/main/data/${encodeURIComponent(chosenFile)}`;
+      }
 
       const md = await fetchText(`data/${chosenFile}`);
       const parsed = parseSemesterMarkdown(md);
