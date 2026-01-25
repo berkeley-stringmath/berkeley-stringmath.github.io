@@ -14,7 +14,7 @@ An early highlight of quantum topology was the observation that the Jones polyno
 ## 2025-02-24 — Jörg Teschner — *Univ. Hamburg*
 **Title:** Schur quantization
 
-Video:
+Video:https://www.youtube.com/watch?v=Y4fJTsySpY8
 
 
 Abstract:
@@ -24,7 +24,7 @@ Schur quantization refers to a particular type of representation of the quantize
 ## 2025-03-03 — Cheuk-Yu Mak — *University of Sheffield*
 **Title:** Symplectic annular Khovanov homology and fixed point localisation
 
-Video:
+Video:https://www.youtube.com/watch?v=U2R7vWenmw8&pp=2AbfHA%3D%3D
 
 
 Abstract:
@@ -34,7 +34,7 @@ Khovanov homology is a powerful link invariant which has numerous applications. 
 ## 2025-03-17 — Andrei Okounkov — *Columbia University*
 **Title:** Quasimaps to flag varieties: again
 
-Video:
+Video:https://www.youtube.com/watch?v=F0jQt6HmK7w, https://www.youtube.com/watch?v=MmDiTvqnJd4&pp=2AadAw%3D%3D
 
 
 Abstract:
@@ -44,7 +44,7 @@ Quasimaps to flag varieties have been studied from many, many angles using a wid
 ## 2025-03-24 — Merlin Christ — *Institut de Mathématiques de Jussieu – Paris Rive Gauche*
 **Title:** Perverse schobers from Lefschetz fibrations
 
-Video:
+Video:https://www.youtube.com/watch?v=kFH1k2cOoGQ&pp=2Aa2DA%3D%3D
 
 
 Abstract:
@@ -74,7 +74,7 @@ In this talk we will introduce a generalization of Maulik-Okounkov’s stable en
 ## 2025-04-14 — Vivek Shende — *UC Berkeley, University of Southern Denmark*
 **Title:** The skein valued mirror of the topological vertex
 
-Video:
+Video:https://www.youtube.com/watch?v=KKn6ohHCrgU
 
 
 Abstract:
@@ -84,7 +84,7 @@ We count holomorphic curves in complex 3-space with boundaries on three special 
 ## 2025-04-21 — Sam DeHority — *Yale University*
 **Title:** Quiver folding and cohomological Hall modules
 
-Video:
+Video:https://www.youtube.com/watch?v=7CxGXmA6VdI
 
 
 Abstract:
@@ -94,7 +94,7 @@ The cohomological Hall algebra of a quiver can serve as model of an algebra of B
 ## 2025-04-28 — Jasper van de Kreeke — *UC Berkeley*
 **Title:** Deformed Mirror Symmetry for Punctured Surfaces
 
-Video:
+Video:https://www.youtube.com/watch?v=xG71WV6OvM4
 
 
 Abstract:
@@ -104,7 +104,7 @@ Mirror symmetry aims at equivalences of Fukaya categories (A-side) and categorie
 ## 2025-05-05 — Yanki Lekili — *Imperial College London*
 **Title:** Deformations of cyclic quotient surface singularities via mirror symmetry
 
-Video:
+Video:https://www.youtube.com/watch?v=nPvdpBoI4vU
 
 
 Abstract:
@@ -114,7 +114,7 @@ Let X_0 be a rational surface with a cyclic quotient singularity (1,a)/r. Kawama
 ## 2025-05-12 — Elise LePage — *UC Berkeley*
 **Title:** Aganagic’s invariant is Khovanov homology
 
-Video:
+Video:https://www.youtube.com/watch?v=LO-0BgvpM-o&pp=2AbIAdIHCQmHCgGHKiGM7w%3D%3D
 
 
 Abstract:
