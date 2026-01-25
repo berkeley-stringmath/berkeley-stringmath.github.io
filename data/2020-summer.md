@@ -45,3 +45,17 @@ The talk is based on joint work with E. Frenkel, P. Koroteev and D. Sage (arXiv:
 
 Abstract:
 Many problems in mathematical physics, from the WKB method to knot theory, involve quantum versions of algebraic curves. In this talk I will review an approach to the quantization of local mirror curves which makes it possible to reconstruct topological string theory on toric Calabi-Yau manifolds. In this approach, the quantization of the mirror curve leads to a trace class operator on the real line. The Fredholm determinant and spectral traces of this operator turn out to encode the topological string partition functions. Conversely, one can use enumerative invariants to solve the spectral theory of these operators, which leads to new exact results in quantum mechanics.
+
+---
+
+## 2020-07-06 — Andrei Okounkov
+**Title:** Inductive construction of stable envelopes and applications
+
+Abstract:
+
+---
+
+## 2020-08-03 — Andrei Okounkov
+**Title:** Inductive construction of stable envelopes and applications, Part II
+
+Abstract:
