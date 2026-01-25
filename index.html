@@ -242,13 +242,13 @@
   }
 
   async function fetchText(url) {
-    const resp = await fetch(url);
+    const resp = await fetch(url, { cache: "no-store" });
     if (!resp.ok) throw new Error(`Fetch failed: ${resp.status} for ${url}`);
     return await resp.text();
   }
 
   async function fetchJson(url) {
-    const resp = await fetch(url);
+    const resp = await fetch(url, { cache: "no-store" });
     if (!resp.ok) throw new Error(`Fetch failed: ${resp.status} for ${url}`);
     return await resp.json();
   }
