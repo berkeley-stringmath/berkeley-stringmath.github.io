@@ -102,6 +102,7 @@
         <th style="width:80px;">Date</th>
         <th style="">Speaker</th>
         <th>Title</th>
+        <th>Links</th>
       </tr>
     </thead>
     <tbody id="scheduleBody"></tbody>
@@ -409,6 +410,8 @@
     let title = "";
     let note = "";
     let abstract = "";
+    let video = "";
+    let slides = "";
 
     for (let j = i + 1; j < lines.length; j++) {
       const line = lines[j].trimEnd();
@@ -418,6 +421,12 @@
 
       const mn = /^(?:\*\*Note:\*\*|Note:)\s*(.*)$/.exec(line.trim());
       if (mn) { note = mn[1].trim(); continue; }
+
+      const mv = /^(?:\*\*Video:\*\*|Video:)\s*(.*)$/.exec(line.trim());
+      if (mv) { video = mv[1].trim(); continue; }
+
+      const ms = /^(?:\*\*Slides:\*\*|Slides:)\s*(.*)$/.exec(line.trim());
+      if (ms) { slides = ms[1].trim(); continue; }
 
       const ma = /^(?:Abstract:)\s*(.*)$/.exec(line.trim());
       if (ma) {
@@ -437,7 +446,9 @@
       affiliation: institution.trim(),
       title: title.trim(),
       note: note.trim(),
-      abstract: abstract
+      abstract: abstract,
+      video: video.trim(),
+      slides: slides.trim()
     };
   }
 
@@ -463,13 +474,25 @@
     return { meta, talks };
   }
 
-  function renderVideoLinks(videoCell) {
-    const raw = (videoCell || "").toString().trim();
-    if (!raw) return "";
-    const parts = raw.split(";").map(x => x.trim()).filter(Boolean);
+  function parseLinkList(raw) {
+    const text = (raw || "").toString().trim();
+    if (!text) return [];
+    return text
+      .split(",")
+      .map(x => x.trim())
+      .filter(Boolean)
+      .map(token => {
+        const m = /^\[(.+?)\]\((.+?)\)$/.exec(token);
+        if (m) return { url: m[2].trim(), text: m[1].trim() };
+        return { url: token, text: "" };
+      });
+  }
+
+  function renderLabeledLinks(label, raw) {
+    const parts = parseLinkList(raw);
     if (parts.length === 0) return "";
-    if (parts.length === 1) return `<a href="${esc(parts[0])}">Video</a>`;
-    return parts.map((url, i) => `<a href="${esc(url)}">Video${i + 1}</a>`).join(" ");
+    if (parts.length === 1) return `<a href="${esc(parts[0].url)}">${esc(label)}</a>`;
+    return parts.map((p, i) => `<a href="${esc(p.url)}">${esc(label)}${i + 1}</a>`).join(" ");
   }
 
   async function main() {
@@ -547,11 +570,19 @@
           titleCellHtml = `<a href="#${esc(id)}">${esc(t.title)}</a>`;
         }
 
+        const linkParts = [];
+        const slidesLinks = renderLabeledLinks("Slides", t.slides);
+        const videoLinks = renderLabeledLinks("Video", t.video);
+        if (slidesLinks) linkParts.push(slidesLinks);
+        if (videoLinks) linkParts.push(videoLinks);
+        const linksCellHtml = linkParts.join(" ");
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${dateCell}</td>
           <td>${hasSpeaker ? esc(t.speaker) : ""}</td>
           <td>${titleCellHtml}</td>
+          <td>${linksCellHtml}</td>
         `;
         scheduleBody.appendChild(tr);
 
@@ -572,7 +603,8 @@
 
         const metaBits = [];
         if (t.note && t.note.trim()) metaBits.push(esc(t.note));
-        // If you later add "Video:" into Note, or add a real video field, you can extend here.
+        if (slidesLinks) metaBits.push(slidesLinks);
+        if (videoLinks) metaBits.push(videoLinks);
 
         if (metaBits.length) {
           const metaP = document.createElement("p");
