@@ -51,7 +51,7 @@ Instanton scattering matrices constructed in the previous talk give evidence for
 
 ---
 
-## 2026-04-27
+## 2026-04-27 — Andrew Hanlon — *Oregon*
 
 ---
 
