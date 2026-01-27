@@ -26,7 +26,7 @@ Instanton scattering matrices constructed in the previous talk give evidence for
 
 ---
 
-## 2026-03-16 
+## 2026-03-16 — Eugene Gorsky — *UC Davis*
 
 
 ---
