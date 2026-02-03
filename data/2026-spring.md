@@ -45,7 +45,7 @@ Instanton scattering matrices constructed in the previous talk give evidence for
 
 ---
 
-## 2026-04-13
+## 2026-04-13: Ben Elias (Oregon)
 
 ---
 
