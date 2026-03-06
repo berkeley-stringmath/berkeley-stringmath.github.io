@@ -42,7 +42,7 @@ Instanton scattering matrices constructed in the previous talk give evidence for
 
 ---
 
-## 2026-04-20
+## 2026-04-20: Elise LePage (Columbia)
 
 ---
 
