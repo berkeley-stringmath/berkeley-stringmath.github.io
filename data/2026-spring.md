@@ -26,7 +26,8 @@ Instanton scattering matrices constructed in the previous talk give evidence for
 
 ---
 
-## 2026-03-23
+## 2026-03-18: Nikita Nekrasov (Stony Brook SUNY)
+Note: 3:40pm
 
 ---
 
