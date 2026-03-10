@@ -23,6 +23,9 @@ Instanton scattering matrices constructed in the previous talk give evidence for
 
 ## 2026-03-16 — Eugene Gorsky — *UC Davis*
 
+Title: Smooth correspondences between quiver varieties
+
+Abstract: We introduce a new class of smooth correspondences between Nakajima quiver varieties called split parabolic quiver varieties, and study their properties. We also construct some interesting operators in  equivariant K-theory of these varieties, and relate them to K-theoretic Hall algebra  and double Dyck path algebra. This is a joint work with Nicolle Gonzalez and Jose Simental. 
 
 ---
 
