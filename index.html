@@ -49,6 +49,9 @@
       line-height: 1.1;
       text-transform: uppercase;
     }
+    .special-time-label {
+      display: block;
+    }
 
     .abstract {
       white-space: pre-wrap;
@@ -556,7 +559,7 @@
 
         const specialTime = (t.note || "").trim();
         const dateCellHtml = specialTime
-          ? `<span class="schedule-date">${esc(fmtScheduleDate(t.date))}<span class="special-time">${esc(specialTime)}</span></span>`
+          ? `<span class="schedule-date">${esc(fmtScheduleDate(t.date))}<span class="special-time"><span>${esc(specialTime)}</span><span class="special-time-label">SPECIAL TIME</span></span></span>`
           : `<span class="schedule-date">${esc(fmtScheduleDate(t.date))}</span>`;
 
         let titleCellHtml = "";
