@@ -559,7 +559,7 @@
 
         const specialTime = (t.note || "").trim();
         const dateCellHtml = specialTime
-          ? `<span class="schedule-date">${esc(fmtScheduleDate(t.date))}<span class="special-time"><span>${esc(specialTime)}</span><span class="special-time-label">SPECIAL TIME</span></span></span>`
+          ? `<span class="schedule-date"><span class="special-time"><span>${esc(fmtScheduleDate(t.date))}, ${esc(specialTime)}</span><span class="special-time-label">SPECIAL SEMINAR</span></span></span>`
           : `<span class="schedule-date">${esc(fmtScheduleDate(t.date))}</span>`;
 
         let titleCellHtml = "";
