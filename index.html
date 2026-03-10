@@ -38,6 +38,17 @@
     #schedule td:nth-child(2) {
       white-space: nowrap;
     }
+    .schedule-date {
+      white-space: nowrap;
+    }
+    .special-time {
+      display: block;
+      margin-top: 4px;
+      color: #c40000;
+      font-weight: 800;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
 
     .abstract {
       white-space: pre-wrap;
@@ -543,10 +554,10 @@
         const hasSpeaker = !!(t.speaker && t.speaker.trim());
         const hasTitle = !!(t.title && t.title.trim());
 
-        // If note exists, mark the date with a star in schedule.
-        const needsStar = !!(t.note && t.note.trim());
-
-        const dateCell = esc(fmtScheduleDate(t.date)) + (needsStar ? "*" : "");
+        const specialTime = (t.note || "").trim();
+        const dateCellHtml = specialTime
+          ? `<span class="schedule-date">${esc(fmtScheduleDate(t.date))}<span class="special-time">${esc(specialTime)}</span></span>`
+          : `<span class="schedule-date">${esc(fmtScheduleDate(t.date))}</span>`;
 
         let titleCellHtml = "";
         if (!hasSpeaker) {
@@ -567,7 +578,7 @@
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${dateCell}</td>
+          <td>${dateCellHtml}</td>
           <td>${hasSpeaker ? esc(t.speaker) : ""}</td>
           <td>${titleCellHtml}</td>
           <td>${linksCellHtml}</td>
@@ -590,7 +601,6 @@
         abstractsDiv.appendChild(h5);
 
         const metaBits = [];
-        if (t.note && t.note.trim()) metaBits.push(esc(t.note));
         if (slidesLinks) metaBits.push(slidesLinks);
         if (videoLinks) metaBits.push(videoLinks);
 
