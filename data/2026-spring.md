@@ -41,7 +41,7 @@ in the physics of twisted bilayer graphene and the possible generalizations to s
 ---
 
 
-## 2026-04-06
+## 2026-04-06 — Spencer Tamagni — *UC Berkeley*
 
 ---
 
@@ -57,4 +57,4 @@ in the physics of twisted bilayer graphene and the possible generalizations to s
 
 ---
 
-## 2026-05-04
+## 2026-05-04: Vivek Shende (UC Berkeley, South Denmark University)
