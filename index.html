@@ -432,12 +432,10 @@
 
       const ma = /^(?:Abstract:)\s*(.*)$/.exec(line.trim());
       if (ma) {
+        const abstractLines = [];
         const rest = ma[1].trim();
-        if (rest) {
-          abstract = rest;
-        } else {
-          abstract = lines.slice(j + 1).join("\n").trim();
-        }
+        if (rest) abstractLines.push(rest);
+        abstract = abstractLines.concat(lines.slice(j + 1)).join("\n").trim();
         break;
       }
     }
