@@ -34,7 +34,7 @@ Abstract: We introduce a new class of smooth correspondences between Nakajima qu
 ## 2026-03-18: Nikita Nekrasov (Simons Center of Geometry and Physics, Stony Brook)
 **Title:**  Yang-Mills flows for twisted multilayer graphene
 
-Video: https://youtu.be/I4mPzMyZRvQ
+Video: https://www.youtube.com/watch?v=wNTOcAFzRag
 
 Slides: https://berkeley-stringmath.github.io/Nikita_Berkeley_2026.pdf
 
