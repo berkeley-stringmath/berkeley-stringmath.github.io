@@ -36,6 +36,8 @@ Abstract: We introduce a new class of smooth correspondences between Nakajima qu
 
 Video: https://youtu.be/I4mPzMyZRvQ
 
+Slides: https://berkeley-stringmath.github.io/Nikita_Berkeley_2026.pdf
+
 Abstract:  We describe an unexpected application of geometry of the space of gauge fields in two dimensional Yang-Mills theory, the subject of celebrated works of Narasimhan-Seshadri and Atiyah-Bott, to the active domain of research in condensed matter physics: the search for high-Tc superconductivity in exotic materials. Specifically, we shall clarify the meaning of the phenomenon of "magic angles"
 in the physics of twisted bilayer graphene and the possible generalizations to several layers.  Joint work with Vasilii Iugov
 
