@@ -51,6 +51,10 @@ in the physics of twisted bilayer graphene and the possible generalizations to s
 
 ## 2026-04-13: Ben Elias (Oregon)
 
+Title: Spin link homology and equivariant categorification
+
+Abstract: The categorical dimension of the second fundamental representation of \mathfrak{sl}_4 is q^4 + q^2 + 2 + q^{-2} + q^{-4}, which is the graded dimension of a vector space spanned by all partitions fitting in a 2 \times 2 box. The transpose operation preserves that set of partitions, and if instead of counting partitions (the trace of the identity) one takes the trace of the transpose, one obtains q^4 + q^2 + q^{-2} + q^{-4}, which is the categorical dimension of the spin representation of \mathfrak{so}(5). This is an indication of a relationship between representation theory in types A and B that falls under the rubric of "folding." Folding is not a statement which makes rigorous sense without categorification: the relationship between those Laurent polynomials is merely that they agree modulo 2; only when one constructs the vector space can one see the true relationship. In joint work with Elijah Bodish and David Rose (arXiv '24) we construct a new involution on categorified quantum \mathfrak{sl}_{2n}, which is not itself a Dynkin diagram involution, but corresponds to the type A Dynkin diagram involution under skew Howe duality. This yields an involution on Khovanov-Rozansky homology, whose trace yields the type B spin-colored link homology (modulo some conjectures). In order to prove this, we also must prove new results about the Grothendieck group; we provide a new diagrammatic calculus describing morphisms between tensor powers of the spin representation in type B. Time permitting (and it won't!) we discuss joint work in preparation, which extends this diagrammatic calculus to a full description of type B webs.
+
 ---
 
 ## 2026-04-20: Elise LePage (Columbia)
