@@ -47,6 +47,10 @@ in the physics of twisted bilayer graphene and the possible generalizations to s
 
 ## 2026-04-06 — Spencer Tamagni — *UC Berkeley*
 
+Title: Toward geometric R-matrix formalism for Coulomb branch actions, II
+
+Abstract: I will review the construction of the action of quantized Coulomb branches on critical cohomology of quasimap spaces from the previous talk, emphasizing essential features. Then I will sketch some conjectural features of this action, in particular the compatibility of geometric R-matrices with monopole and instanton scattering matrices. This is based on ongoing joint work with Tommaso Botta. 
+
 ---
 
 ## 2026-04-13: Ben Elias (Oregon)
