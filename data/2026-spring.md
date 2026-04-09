@@ -67,6 +67,10 @@ Abstract: The categorical dimension of the second fundamental representation of 
 
 ## 2026-04-27 — Andrew Hanlon — *Oregon*
 
+Title: Derived categories of toric varieties via mirror symmetry
+
+Abstract: Beilinson’s resolution and full strong exceptional collection of line bundles for the derived category of projective space are incredibly useful computational tools. In recent work with many collaborators, we have shown that much of this structure persists for more general toric varieties. Namely, they admit short explicit resolutions of the diagonal by direct sums of line bundles and their derived categories embed in a canonical category where these line bundles form a full strong exceptional collection. I will discuss these results and how they were inspired by homological mirror symmetry.
+
 ---
 
 ## 2026-05-04: Vivek Shende (UC Berkeley, South Denmark University)
