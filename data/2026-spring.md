@@ -63,6 +63,12 @@ Abstract: The categorical dimension of the second fundamental representation of 
 
 ## 2026-04-20: Elise LePage (Columbia)
 
+Title: Categorified representations of quantum groups from Fukaya-Seidel categories of Coulomb branches
+
+Abstract: Cyclotomic KLRW algebras are known to categorify tensor products of irreducible representations of quantum groups. I will explain how these algebras arise as endomorphism algebras of Lagrangians in additive Coulomb branches.
+
+There are generalizations of KLRW algebras that categorify arbitrary tensor products of Verma modules and irreducible representations of quantum groups. I will define these algebras (which were previously defined only for certain cases) and explain how they arise as endomorphism algebras of the same Lagrangians after removing certain divisors from the additive Coulomb branches.
+
 ---
 
 ## 2026-04-27 — Andrew Hanlon — *Oregon*
