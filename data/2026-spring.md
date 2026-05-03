@@ -79,6 +79,8 @@ There are generalizations of KLRW algebras that categorify arbitrary tensor prod
 
 Title: Derived categories of toric varieties via mirror symmetry
 
+Video: https://youtu.be/Jc077QjmdCI
+
 Abstract: Beilinson’s resolution and full strong exceptional collection of line bundles for the derived category of projective space are incredibly useful computational tools. In recent work with many collaborators, we have shown that much of this structure persists for more general toric varieties. Namely, they admit short explicit resolutions of the diagonal by direct sums of line bundles and their derived categories embed in a canonical category where these line bundles form a full strong exceptional collection. I will discuss these results and how they were inspired by homological mirror symmetry.
 
 ---
