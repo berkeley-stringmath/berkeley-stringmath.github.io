@@ -84,3 +84,7 @@ Abstract: Beilinson’s resolution and full strong exceptional collection of lin
 ---
 
 ## 2026-05-04: Vivek Shende (UC Berkeley, South Denmark University)
+
+Title: Fukaya categories and higher representation theory
+
+Abstract: I’ll explain how the Fukaya categories of Zastava organize many old and new structures of the representation theory of categorified quantum groups.  This is a report on joint work with Mina Aganagic, Elise LePage, and Peng Zhou.  
