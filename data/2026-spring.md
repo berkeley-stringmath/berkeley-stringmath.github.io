@@ -89,4 +89,6 @@ Abstract: Beilinson’s resolution and full strong exceptional collection of lin
 
 Title: Fukaya categories and higher representation theory
 
+Video: https://www.youtube.com/watch?v=xmrvxhKPB6E , https://www.youtube.com/watch?v=2ebV1GLUetI
+
 Abstract: I’ll explain how the Fukaya categories of Zastava organize many old and new structures of the representation theory of categorified quantum groups.  This is a report on joint work with Mina Aganagic, Elise LePage, and Peng Zhou.  
